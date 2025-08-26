@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <queries>
+        <!-- 声明要检查的应用包名 - 根据业务需要保留 -->
+        <package android:name="com.tencent.mm"/>
+        <package android:name="com.tencent.mobileqq"/>
+        <package android:name="tv.danmaku.bili"/>
+        <package android:name="com.ss.android.ugc.aweme"/>
+        <package android:name="com.smile.gifmaker"/>
+        <package android:name="com.sina.weibo"/>
+        <package android:name="com.ss.android.article.video"/>
+        <package android:name="com.hihonor.hiboard"/>
+        <package android:name="com.taobao.taobao"/>
+        <package android:name="com.jingdong.app.mall"/>
+
+        <!-- 声明可访问的 Provider -->
+        <provider android:authorities="com.android.calendar"/>
+        <provider android:authorities="com.facebook.katana.provider.PlatformProvider"/>
+    </queries>
+
+    <application
+        android:name=".QQInterceptorApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.QQInterceptor_Demo"
+        tools:targetApi="31">
+        <activity
+            android:name=".presentation.ui.activity.LauncherActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.QQInterceptor_Demo">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <!-- MVI版本Activity（使用Fragment架构） -->
+        <activity
+            android:name=".presentation.ui.activity.MainActivityMVI"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.QQInterceptor_Demo" />
+        
+        <!-- Compose版本Activity（声明式UI架构） -->
+        <activity
+            android:name=".presentation.ui.activity.MainActivityCompose"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.QQInterceptor_Demo" />
+        
+        <!-- 保留原始Activity用于对比 -->
+        <activity
+            android:name=".presentation.ui.activity.MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.QQInterceptor_Demo" />
+    </application>
+
+</manifest>

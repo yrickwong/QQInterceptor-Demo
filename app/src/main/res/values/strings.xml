@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">QQInterceptor_Demo</string>
+    <string name="version_format">v%1$s (%2$d)</string>
+    <string name="md5_format">MD5: %1$s</string>
+    <string name="sha1_format">SHA1: %1$s</string>
+    <string name="sha256_format">SHA256: %1$s</string>
+    <string name="no_apps_found">未找到应用</string>
+    
+    <!-- Launcher Activity -->
+    <string name="select_version">选择版本</string>
+    <string name="original_version">原版 (传统架构)</string>
+    <string name="mvi_version">MVI版 (Fragment架构)</string>
+    <string name="compose_version">Compose版 (声明式UI)</string>
+    
+    <!-- App List -->
+    <string name="load_all_apps">加载全部应用</string>
+    <string name="load_user_apps">加载用户应用</string>
+    <string name="search_hint">搜索包名或应用名...</string>
+    <string name="loading_apps">正在加载应用列表...</string>
+    <string name="no_matching_apps">没有找到匹配的应用</string>
+    <string name="load_failed_format">加载失败: %1$s</string>
+    
+    <!-- App Details Dialog -->
+    <string name="app_details">应用详情</string>
+    <string name="app_name_format">应用名称: %1$s</string>
+    <string name="package_name_format">包名: %1$s</string>
+    <string name="version_info_format">版本: %1$s (%2$d)</string>
+    <string name="app_type_format">类型: %1$s</string>
+    <string name="system_app">系统应用</string>
+    <string name="user_app">用户应用</string>
+    <string name="signature_info">签名信息:</string>
+    <string name="install_time_format">安装时间: %1$s</string>
+    <string name="update_time_format">更新时间: %1$s</string>
+    <string name="confirm">确定</string>
+    <string name="copy_package_name">复制包名</string>
+    <string name="package_name_copied">包名已复制到剪贴板</string>
+</resources>
