@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -38,6 +40,9 @@ import com.example.qqinterceptor_demo.data.AppInfo
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.qqinterceptor_demo.presentation.ui.compose.preview.PreviewData
+import com.example.qqinterceptor_demo.presentation.ui.compose.theme.QQInterceptorTheme
 
 /**
  * 应用信息项组件 - Compose版本
@@ -253,5 +258,82 @@ private fun formatSignature(signature: String): String {
         "${signature.substring(0, 32)}..."
     } else {
         signature
+    }
+}
+
+// ==================== Compose Previews ====================
+
+/**
+ * Preview: 用户应用项
+ */
+@Preview(name = "用户应用", showBackground = true)
+@Composable
+private fun PreviewAppItem_UserApp() {
+    QQInterceptorTheme {
+        AppItem(
+            appInfo = PreviewData.sampleUserApp,
+            onClick = { /* Preview中不需要实际点击 */ }
+        )
+    }
+}
+
+/**
+ * Preview: 系统应用项
+ */
+@Preview(name = "系统应用", showBackground = true)
+@Composable
+private fun PreviewAppItem_SystemApp() {
+    QQInterceptorTheme {
+        AppItem(
+            appInfo = PreviewData.sampleSystemApp,
+            onClick = { /* Preview中不需要实际点击 */ }
+        )
+    }
+}
+
+/**
+ * Preview: 微信应用项
+ */
+@Preview(name = "微信应用", showBackground = true)
+@Composable
+private fun PreviewAppItem_WeChat() {
+    QQInterceptorTheme {
+        AppItem(
+            appInfo = PreviewData.sampleWeChatApp,
+            onClick = { /* Preview中不需要实际点击 */ }
+        )
+    }
+}
+
+/**
+ * Preview: 深色主题应用项
+ */
+@Preview(name = "深色主题", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewAppItem_DarkTheme() {
+    QQInterceptorTheme {
+        AppItem(
+            appInfo = PreviewData.sampleUserApp,
+            onClick = { /* Preview中不需要实际点击 */ }
+        )
+    }
+}
+
+/**
+ * Preview: 应用项列表
+ */
+@Preview(name = "应用列表", showBackground = true)
+@Composable
+private fun PreviewAppItem_List() {
+    QQInterceptorTheme {
+        LazyColumn {
+            items(PreviewData.sampleAppList.take(3)) { appInfo ->
+                AppItem(
+                    appInfo = appInfo,
+                    onClick = { /* Preview中不需要实际点击 */ },
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+        }
     }
 }

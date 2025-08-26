@@ -31,6 +31,9 @@ import com.example.qqinterceptor_demo.data.AppInfo
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.qqinterceptor_demo.presentation.ui.compose.preview.PreviewData
+import com.example.qqinterceptor_demo.presentation.ui.compose.theme.QQInterceptorTheme
 
 /**
  * 应用详情对话框 - Compose版本
@@ -238,4 +241,82 @@ private fun copyPackageNameToClipboard(context: Context, packageName: String) {
         context.getString(R.string.package_name_copied), 
         Toast.LENGTH_SHORT
     ).show()
+}
+
+// ==================== Compose Previews ====================
+
+/**
+ * Preview: 用户应用详情对话框
+ */
+@Preview(name = "用户应用详情", showBackground = true)
+@Composable
+private fun PreviewAppDetailDialog_UserApp() {
+    QQInterceptorTheme {
+        AppDetailDialog(
+            appInfo = PreviewData.sampleUserApp,
+            onDismiss = { /* Preview中不需要实际操作 */ }
+        )
+    }
+}
+
+/**
+ * Preview: 系统应用详情对话框
+ */
+@Preview(name = "系统应用详情", showBackground = true)
+@Composable
+private fun PreviewAppDetailDialog_SystemApp() {
+    QQInterceptorTheme {
+        AppDetailDialog(
+            appInfo = PreviewData.sampleSystemApp,
+            onDismiss = { /* Preview中不需要实际操作 */ }
+        )
+    }
+}
+
+/**
+ * Preview: 微信应用详情对话框
+ */
+@Preview(name = "微信详情", showBackground = true)
+@Composable
+private fun PreviewAppDetailDialog_WeChat() {
+    QQInterceptorTheme {
+        AppDetailDialog(
+            appInfo = PreviewData.sampleWeChatApp,
+            onDismiss = { /* Preview中不需要实际操作 */ }
+        )
+    }
+}
+
+/**
+ * Preview: 深色主题应用详情对话框
+ */
+@Preview(name = "深色主题详情", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewAppDetailDialog_DarkTheme() {
+    QQInterceptorTheme {
+        AppDetailDialog(
+            appInfo = PreviewData.sampleUserApp,
+            onDismiss = { /* Preview中不需要实际操作 */ }
+        )
+    }
+}
+
+/**
+ * Preview: 应用详情内容组件（无对话框外壳）
+ */
+@Preview(name = "详情内容", showBackground = true)
+@Composable
+private fun PreviewAppDetailContent() {
+    QQInterceptorTheme {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            AppDetailContent(
+                appInfo = PreviewData.sampleUserApp,
+                dateFormat = dateFormat
+            )
+        }
+    }
 }

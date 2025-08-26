@@ -16,7 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.qqinterceptor_demo.presentation.ui.compose.theme.QQInterceptorTheme
 
 /**
  * 空状态组件 - Compose版本
@@ -58,5 +60,59 @@ fun EmptyState(
                 textAlign = TextAlign.Center
             )
         }
+    }
+}
+
+// ==================== Compose Previews ====================
+
+/**
+ * Preview: 默认空状态
+ */
+@Preview(name = "默认空状态", showBackground = true)
+@Composable
+private fun PreviewEmptyState_Default() {
+    QQInterceptorTheme {
+        EmptyState(
+            message = "未找到应用"
+        )
+    }
+}
+
+/**
+ * Preview: 搜索无结果状态
+ */
+@Preview(name = "搜索无结果", showBackground = true)
+@Composable
+private fun PreviewEmptyState_Search() {
+    QQInterceptorTheme {
+        EmptyState(
+            message = "未找到匹配 \"测试\" 的应用"
+        )
+    }
+}
+
+/**
+ * Preview: 深色主题空状态
+ */
+@Preview(name = "深色主题", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewEmptyState_Dark() {
+    QQInterceptorTheme {
+        EmptyState(
+            message = "未找到应用"
+        )
+    }
+}
+
+/**
+ * Preview: 长消息文本
+ */
+@Preview(name = "长消息", showBackground = true)
+@Composable
+private fun PreviewEmptyState_LongMessage() {
+    QQInterceptorTheme {
+        EmptyState(
+            message = "未找到匹配 \"com.example.very.long.package.name.that.might.be.too.long\" 的应用，请尝试使用更短的关键词进行搜索"
+        )
     }
 }

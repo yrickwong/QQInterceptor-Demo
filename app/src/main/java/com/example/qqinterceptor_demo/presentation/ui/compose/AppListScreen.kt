@@ -36,6 +36,9 @@ import com.example.qqinterceptor_demo.presentation.ui.compose.components.AppItem
 import com.example.qqinterceptor_demo.presentation.ui.compose.components.AppDetailDialog
 import com.example.qqinterceptor_demo.presentation.ui.compose.components.EmptyState
 import com.example.qqinterceptor_demo.data.AppInfo
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.qqinterceptor_demo.presentation.ui.compose.preview.PreviewData
+import com.example.qqinterceptor_demo.presentation.ui.compose.theme.QQInterceptorTheme
 
 /**
  * 应用列表主屏幕 - Compose + Mavericks版本
@@ -233,5 +236,187 @@ private fun AppListContent(
                 }
             }
         }
+    }
+}
+
+/**
+ * AppListContent的Preview版本 - 不依赖ViewModel
+ */
+@Composable
+private fun AppListScreenPreview(
+    state: AppListState,
+    onLoadAllApps: () -> Unit = {},
+    onLoadUserApps: () -> Unit = {},
+    onSearchQueryChange: (String) -> Unit = {},
+    onAppClick: (AppInfo) -> Unit = {}
+) {
+    var selectedApp by remember { mutableStateOf<AppInfo?>(null) }
+    var searchQuery by remember { mutableStateOf(state.searchQuery) }
+    
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        // 操作按钮区域
+        ButtonRow(
+            isLoading = state.isLoading,
+            onLoadAllApps = onLoadAllApps,
+            onLoadUserApps = onLoadUserApps
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // 搜索栏
+        AppSearchBar(
+            query = searchQuery,
+            onQueryChange = { newQuery ->
+                searchQuery = newQuery
+                onSearchQueryChange(newQuery)
+            },
+            onClearSearch = {
+                searchQuery = ""
+                onSearchQueryChange("")
+            }
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // 应用数量显示
+        if (state.filteredApps.isNotEmpty()) {
+            Text(
+                text = state.countText,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        
+        // 内容区域
+        AppListContent(
+            state = state,
+            onAppClick = { 
+                selectedApp = it
+                onAppClick(it)
+            }
+        )
+    }
+    
+    // 应用详情对话框
+    selectedApp?.let { appInfo ->
+        AppDetailDialog(
+            appInfo = appInfo,
+            onDismiss = { selectedApp = null }
+        )
+    }
+}
+
+// ==================== Compose Previews ====================
+
+/**
+ * Preview: 加载状态
+ */
+@Preview(name = "加载中", showBackground = true)
+@Composable
+private fun PreviewAppListScreen_Loading() {
+    QQInterceptorTheme {
+        AppListScreenPreview(
+            state = PreviewData.loadingState
+        )
+    }
+}
+
+/**
+ * Preview: 应用列表状态
+ */
+@Preview(name = "应用列表", showBackground = true, heightDp = 600)
+@Composable
+private fun PreviewAppListScreen_Loaded() {
+    QQInterceptorTheme {
+        AppListScreenPreview(
+            state = PreviewData.loadedState
+        )
+    }
+}
+
+/**
+ * Preview: 搜索状态
+ */
+@Preview(name = "搜索结果", showBackground = true)
+@Composable
+private fun PreviewAppListScreen_Search() {
+    QQInterceptorTheme {
+        AppListScreenPreview(
+            state = PreviewData.searchState
+        )
+    }
+}
+
+/**
+ * Preview: 空状态
+ */
+@Preview(name = "空状态", showBackground = true)
+@Composable
+private fun PreviewAppListScreen_Empty() {
+    QQInterceptorTheme {
+        AppListScreenPreview(
+            state = PreviewData.emptyState
+        )
+    }
+}
+
+/**
+ * Preview: 错误状态
+ */
+@Preview(name = "错误状态", showBackground = true)
+@Composable
+private fun PreviewAppListScreen_Error() {
+    QQInterceptorTheme {
+        AppListScreenPreview(
+            state = PreviewData.errorState
+        )
+    }
+}
+
+/**
+ * Preview: 深色主题
+ */
+@Preview(name = "深色主题", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, heightDp = 600)
+@Composable
+private fun PreviewAppListScreen_Dark() {
+    QQInterceptorTheme {
+        AppListScreenPreview(
+            state = PreviewData.loadedState
+        )
+    }
+}
+
+/**
+ * Preview: 单个组件 - 按钮行
+ */
+@Preview(name = "按钮行", showBackground = true)
+@Composable
+private fun PreviewButtonRow() {
+    QQInterceptorTheme {
+        ButtonRow(
+            isLoading = false,
+            onLoadAllApps = { },
+            onLoadUserApps = { }
+        )
+    }
+}
+
+/**
+ * Preview: 单个组件 - 搜索栏
+ */
+@Preview(name = "搜索栏", showBackground = true)
+@Composable
+private fun PreviewAppSearchBar() {
+    QQInterceptorTheme {
+        AppSearchBar(
+            query = "微信",
+            onQueryChange = { },
+            onClearSearch = { }
+        )
     }
 }
