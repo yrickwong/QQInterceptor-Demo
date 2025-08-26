@@ -45,28 +45,57 @@ This project uses Gradle with Kotlin DSL and centralized dependency management v
 
 ### Common Commands
 
+**Note**: This project requires Java 17. If you encounter "Unable to locate a Java Runtime" errors, use the `gradlew-java.sh` script instead of `./gradlew`.
+
+```bash
+# Using gradlew-java.sh (recommended):
+./gradlew-java.sh build
+./gradlew-java.sh assembleDebug
+./gradlew-java.sh lintDebug
+
+# Or set environment variables manually:
+export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
+export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
+./gradlew build
+```
+
+**Standard Gradle Commands:**
+
 ```bash
 # Build the project
-./gradlew build
+./gradlew-java.sh build
 
 # Build debug APK
-./gradlew assembleDebug
+./gradlew-java.sh assembleDebug
 
 # Build release APK  
-./gradlew assembleRelease
+./gradlew-java.sh assembleRelease
 
 # Run unit tests
-./gradlew test
+./gradlew-java.sh test
 
 # Run instrumentation tests
-./gradlew connectedAndroidTest
+./gradlew-java.sh connectedAndroidTest
+
+# Run lint checks
+./gradlew-java.sh lintDebug
 
 # Clean build
-./gradlew clean
+./gradlew-java.sh clean
 
 # Install debug APK to connected device
-./gradlew installDebug
+./gradlew-java.sh installDebug
 ```
+
+**Environment Setup:**
+
+The Java environment variables have been added to `~/.zshrc`:
+```bash
+export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
+export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
+```
+
+For new terminal sessions, these will be loaded automatically. For the current session, use `source ~/.zshrc` or use the `gradlew-java.sh` script.
 
 ## Project Structure
 

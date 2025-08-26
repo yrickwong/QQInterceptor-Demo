@@ -22,11 +22,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -34,7 +36,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.qqinterceptor_demo.R
 import com.example.qqinterceptor_demo.data.AppInfo
 import java.text.SimpleDateFormat
@@ -43,6 +47,7 @@ import java.util.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.qqinterceptor_demo.presentation.ui.compose.preview.PreviewData
 import com.example.qqinterceptor_demo.presentation.ui.compose.theme.QQInterceptorTheme
+import com.example.qqinterceptor_demo.presentation.ui.compose.performance.PerformanceUtils
 
 /**
  * 应用信息项组件 - Compose版本
@@ -63,10 +68,13 @@ fun AppItem(
 ) {
     val context = LocalContext.current
     
-    // 记住日期格式化器，避免重复创建
-    val dateFormat = remember {
-        SimpleDateFormat("安装时间: yyyy-MM-dd HH:mm", Locale.getDefault())
-    }
+    // 使用 derivedStateOf 优化日期格式化
+    val formattedInstallTime = remember(appInfo.installTime) {
+        derivedStateOf {
+            val dateFormat = SimpleDateFormat("安装时间: yyyy-MM-dd HH:mm", Locale.getDefault())
+            dateFormat.format(Date(appInfo.installTime))
+        }
+    }.value
     
     Card(
         modifier = modifier
@@ -110,10 +118,15 @@ fun AppItem(
                         modifier = Modifier.weight(1f)
                     )
                     
-                    // 系统应用标签
+                    // 系统应用标签和性能调试信息
                     if (appInfo.isSystemApp) {
                         SystemAppTag()
                     }
+                    
+                    // 性能调试信息（仅在Debug模式下显示）
+                    PerformanceUtils.VisibleRecompositionCounter(
+                        name = "AppItem"
+                    )
                 }
                 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -145,10 +158,7 @@ fun AppItem(
                 
                 // 安装时间
                 Text(
-                    text = stringResource(
-                        R.string.install_time_format, 
-                        dateFormat.format(Date(appInfo.installTime))
-                    ),
+                    text = formattedInstallTime,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -158,19 +168,22 @@ fun AppItem(
 }
 
 /**
- * 应用图标组件
- * 处理Drawable到Compose Image的转换
+ * 应用图标组件 - 优化版本
+ * 使用 AsyncImage 替代 rememberAsyncImagePainter 提高性能
  */
 @Composable
 private fun AppIcon(
     drawable: Drawable,
     contentDescription: String
 ) {
-    // 使用coil库处理Drawable
-    val painter = rememberAsyncImagePainter(model = drawable)
+    val context = LocalContext.current
     
-    Image(
-        painter = painter,
+    AsyncImage(
+        model = ImageRequest.Builder(context)
+            .data(drawable)
+            .size(48.dp.value.toInt()) // 明确指定尺寸
+            .crossfade(false) // 禁用淡入动画以提高滑动性能
+            .build(),
         contentDescription = contentDescription,
         modifier = Modifier.size(48.dp)
     )

@@ -4,7 +4,9 @@
       "Bash(mkdir:*)",
       "Bash(mv:*)",
       "WebSearch",
-      "Bash(./gradlew:*)"
+      "Bash(./gradlew:*)",
+      "Bash(export:*)",
+      "Bash(export JAVA_HOME=\"/opt/homebrew/opt/openjdk@17\")"
     ],
     "deny": [],
     "ask": []

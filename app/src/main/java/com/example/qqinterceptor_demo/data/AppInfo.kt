@@ -1,10 +1,13 @@
 package com.example.qqinterceptor_demo.data
 
 import android.graphics.drawable.Drawable
+import androidx.compose.runtime.Stable
 
 /**
  * 应用信息数据类
+ * 添加 @Stable 注解优化 Compose 性能
  */
+@Stable
 data class AppInfo(
     val packageName: String,           // 包名
     val appName: String,               // 应用名称

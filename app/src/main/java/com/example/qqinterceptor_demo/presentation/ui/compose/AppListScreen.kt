@@ -1,5 +1,6 @@
 package com.example.qqinterceptor_demo.presentation.ui.compose
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +42,8 @@ import com.example.qqinterceptor_demo.data.AppInfo
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.qqinterceptor_demo.presentation.ui.compose.preview.PreviewData
 import com.example.qqinterceptor_demo.presentation.ui.compose.theme.QQInterceptorTheme
+import com.example.qqinterceptor_demo.presentation.ui.compose.performance.PerformanceMonitor
+import com.example.qqinterceptor_demo.presentation.ui.compose.performance.PerformanceUtils
 
 /**
  * 应用列表主屏幕 - Compose + Mavericks版本
@@ -62,6 +67,10 @@ fun AppListScreen(
     // 本地UI状态 - 用于控制对话框显示
     var selectedApp by remember { mutableStateOf<AppInfo?>(null) }
     var searchQuery by remember { mutableStateOf("") }
+    
+    // 添加性能监控
+    PerformanceMonitor.FrameRateMonitor()
+    PerformanceMonitor.TrackRecomposition("AppListScreen")
     
     Column(
         modifier = Modifier
@@ -92,13 +101,31 @@ fun AppListScreen(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // 应用数量显示
+        // 应用数量显示和性能信息
         if (state.filteredApps.isNotEmpty()) {
-            Text(
-                text = state.countText,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = state.countText,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                
+                // 添加性能调试信息
+                Column {
+                    PerformanceUtils.VisibleRecompositionCounter(
+                        name = "AppCount",
+                        showInDebug = true
+                    )
+                    PerformanceUtils.DebugInfo(
+                        info = "Items: ${state.filteredApps.size}"
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
         }
         
@@ -223,16 +250,34 @@ private fun AppListContent(
         
         // 列表状态 - 使用LazyColumn高效渲染
         else -> {
-            LazyColumn {
+            val listState = rememberLazyListState()
+            
+            PerformanceMonitor.ScrollPerformanceMonitor()
+            
+            LazyColumn(
+                state = listState,
+                // 添加内容边距以提高性能
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 16.dp)
+            ) {
                 items(
                     items = state.filteredApps,
-                    key = { it.packageName } // 使用稳定的key优化重组
+                    key = { it.packageName }, // 使用稳定的key优化重组
+                    contentType = { "app_item" } // 指定内容类型提高回收效率
                 ) { appInfo ->
-                    AppItem(
-                        appInfo = appInfo,
-                        onClick = { onAppClick(appInfo) },
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    )
+                    PerformanceMonitor.MonitoredContent(
+                        name = "AppItem_${appInfo.packageName}"
+                    ) {
+                        PerformanceUtils.OptimizedListItem(
+                            item = appInfo,
+                            key = appInfo.packageName
+                        ) { item ->
+                            AppItem(
+                                appInfo = item,
+                                onClick = { onAppClick(item) },
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
